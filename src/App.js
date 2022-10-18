@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import Tours from './Tours'
 import Loading from './Loading'
+import Tours from './Tours'
 
 const url = 'https://course-api.com/react-tours-project'
 
 const App = () => {
-  const [loading, setLoading] = useState(false)
+
+  const [loading, setLoading] = useState(true)
   const [tours, setTours] = useState([])
 
   const fetchTours = async () => {
@@ -18,9 +19,13 @@ const App = () => {
       setTours(tours)
     } catch (error) {
       setLoading(false)
-      console.log(error);
+      console.log(error)
     }
 
+  }
+
+  const deleteHandler = (id) => {
+    setTours(tours.filter((tour) => tour.id !== id))
   }
 
   useEffect(() => {
@@ -29,13 +34,24 @@ const App = () => {
 
   if (loading) {
     return (
-      <Loading />
+      <main>
+        <Loading />
+      </main>
+    )
+  }
+
+  if(tours.length === 0) {
+    return (
+      <div>
+        <h1>There is no Tour</h1>
+        <button className='border-2 border-zinc-600 text-zinc-900' onClick={fetchTours}>Refresh</button>
+      </div>
     )
   }
 
   return (
-    <div className='w-full h-screen'>
-      <Tours tours={tours} />
+    <div className='bg-gray-400'>
+      <Tours tours={tours} onDelete={deleteHandler} />
     </div>
   )
 }
